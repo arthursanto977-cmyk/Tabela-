@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🧪 Enciclopédia da Tabela Periódica</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #050505;
+  color: #f5f5f5;
+  line-height: 1.6;
+}
+
+header {
+  padding: 55px 20px;
+  text-align: center;
+  background: radial-gradient(circle at top, #263238, #080808 65%);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 38px;
+}
+
+header p {
+  color: #aaa;
+  font-size: 17px;
+}
+
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10, 10, 10, 0.96);
+  border-bottom: 1px solid #292929;
+  padding: 12px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+nav a {
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  margin: 5px 7px;
+  font-size: 14px;
+}
+
+nav a:hover {
+  color: #00bfff;
+}
+
+.pesquisa {
+  max-width: 700px;
+  margin: 15px auto 0;
+}
+
+.pesquisa input {
+  width: 100%;
+  padding: 15px 20px;
+  border-radius: 30px;
+  border: 1px solid #333;
+  background: #181818;
+  color: white;
+  outline: none;
+  font-size: 16px;
+}
+
+.pesquisa input:focus {
+  border-color: #00aaff;
+}
+
+section {
+  max-width: 1100px;
+  margin: auto;
+  padding: 45px 20px;
+}
+
+h2 {
+  font-size: 30px;
+  margin-bottom: 25px;
+}
+
+h3 {
+  font-size: 22px;
+}
+
+.card {
+  background: #111;
+  border: 1px solid #292929;
+  border-radius: 18px;
+  padding: 24px;
+  margin: 20px 0;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.card:hover {
+  border-color: #444;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.info {
+  background: #1b1b1b;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #292929;
+}
+
+button {
+  background: #008cff;
+  color: white;
+  border: 0;
+  padding: 12px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  margin: 5px;
+}
+
+button:hover {
+  background: #006dcc;
+}
+
+.resposta {
+  display: none;
+  margin-top: 12px;
+  padding: 15px;
+  border-radius: 10px;
+  background: #172117;
+  color: #9cff9c;
+}
+
+.semResultado {
+  display: none;
+  text-align: center;
+  padding: 25px;
+  background: #151515;
+  border-radius: 15px;
+  color: #aaa;
+}
+
+/* TABELA */
+
+.tabela {
+  display: grid;
+  grid-template-columns: repeat(18, 55px);
+  gap: 5px;
+  overflow-x: auto;
+  padding: 10px 0 20px;
+}
+
+.elemento {
+  min-height: 75px;
+  padding: 7px;
+  border-radius: 8px;
+  background: #151515;
+  border: 1px solid #333;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.elemento:hover {
+  transform: translateY(-4px);
+  border-color: #00bfff;
+  box-shadow: 0 5px 20px rgba(0, 191, 255, 0.2);
+}
+
+.numero {
+  font-size: 11px;
+  color: #aaa;
+  text-align: left;
+}
+
+.simbolo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #00bfff;
+}
+
+.nome {
+  font-size: 10px;
+  color: #ddd;
+}
+
+.vazio {
+  min-height: 75px;
+}
+
+.detalhes {
+  display: none;
+  background: #161616;
+  border: 1px solid #00aaff;
+  border-radius: 18px;
+  padding: 25px;
+  margin-top: 20px;
+}
+
+.detalhes h3 {
+  color: #00bfff;
+}
+
+/* CORES */
+
+.nao-metal {
+  border-color: #39d353;
+}
+
+.gas-nobre {
+  border-color: #c084fc;
+}
+
+.metal-alcalino {
+  border-color: #ff7b72;
+}
+
+.alcalino-terroso {
+  border-color: #ffa657;
+}
+
+.metal-transicao {
+  border-color: #58a6ff;
+}
+
+.semi-metal {
+  border-color: #f2cc60;
+}
+
+.halogenio {
+  border-color: #ff79c6;
+}
+
+.lantanideo {
+  border-color: #00d4aa;
+}
+
+.actinideo {
+  border-color: #00d4aa;
+}
+
+/* QUIZ */
+
+.quiz-question {
+  background: #181818;
+  border: 1px solid #292929;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.quiz-question h3 {
+  margin-top: 0;
+}
+
+.quiz-option {
+  display: block;
+  background: #222;
+  padding: 13px;
+  margin: 8px 0;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.quiz-option:hover {
+  background: #292929;
+  border-color: #008cff;
+}
+
+.quiz-option input {
+  margin-right: 10px;
+}
+
+#resultadoQuiz {
+  display: none;
+  margin-top: 25px;
+  padding: 25px;
+  border-radius: 18px;
+  text-align: center;
+  background: #151515;
+  border: 1px solid #333;
+}
+
+.nota {
+  font-size: 45px;
+  font-weight: bold;
+  color: #00bfff;
+}
+
+.aprovado {
+  color: #5cff75;
+}
+
+.revisar {
+  color: #ffcc55;
+}
+
+.tentar {
+  color: #ff6565;
+}
+
+/* GRÁFICOS */
+
+.grafico {
+  background: #111;
+  border-radius: 18px;
+  padding: 20px;
+  margin: 20px 0;
+  min-height: 300px;
+}
+
+canvas {
+  width: 100% !important;
+  max-height: 400px;
+}
+
+/* ATIVIDADES */
+
+.respostaAtividade {
+  display: none;
+  margin-top: 15px;
+  padding: 18px;
+  background: #172117;
+  border-radius: 12px;
+  color: #9cff9c;
+}
+
+textarea {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+footer {
+  text-align: center;
+  padding: 50px 20px;
+  color: #777;
+  border-top: 1px solid #222;
+}
+
+@media (max-width: 800px) {
+  .tabela {
+    grid-template-columns: repeat(18, 48px);
+  }
+}
+
+@media (max-width: 650px) {
+  header h1 {
+    font-size: 28px;
+  }
+
+  header p {
+    font-size: 15px;
+  }
+
+  section {
+    padding: 30px 15px;
+  }
+
+  h2 {
+    font-size: 25px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  nav a {
+    font-size: 13px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🧪 Enciclopédia da Tabela Periódica</h1>
+
+  <p>
+    Química • Matemática • Português • Ciência • Educação
+  </p>
+</header>
+
+<nav>
+
+  <a href="#inicio">Início</a>
+  <a href="#tabela">Tabela</a>
+  <a href="#ciencia">Ciência</a>
+  <a href="#matematica">Matemática</a>
+  <a href="#portugues">Português</a>
+  <a href="#atividades">Atividades</a>
+  <a href="#graficos">Gráficos</a>
+  <a href="#quiz">🧠 Quiz</a>
+
+  <div class="pesquisa">
+    <input
+      type="search"
+      id="pesquisa"
+      placeholder="🔎 Pesquise um elemento..."
+      autocomplete="off"
+    >
+  </div>
+
+</nav>
+
+<!-- INÍCIO -->
+
+<section id="inicio">
+
+  <h2>📚 Bem-vindo</h2>
+
+  <div class="card">
+
+    <h3>O que você vai aprender?</h3>
+
+    <p>
+      Este site apresenta informações sobre a Tabela Periódica
+      e relaciona seus conhecimentos com Matemática e Língua
+      Portuguesa.
+    </p>
+
+    <div class="grid">
+
+      <div class="info">
+        🧪 <strong>Química</strong><br>
+        Conheça os elementos químicos e suas características.
+      </div>
+
+      <div class="info">
+        📐 <strong>Matemática</strong><br>
+        Aprenda a trabalhar com números atômicos.
+      </div>
+
+      <div class="info">
+        📚 <strong>Português</strong><br>
+        Leia textos e desenvolva seu vocabulário.
+      </div>
+
+      <div class="info">
+        🧠 <strong>Quiz</strong><br>
+        Teste seus conhecimentos.
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- TABELA -->
+
+<section id="tabela">
+
+  <h2>🧪 Tabela Periódica</h2>
+
+  <div class="card">
+
+    <p>
+      Clique em qualquer elemento para visualizar suas informações.
+    </p>
+
+    <div class="tabela" id="tabelaPeriodica"></div>
+
+    <div id="detalhes" class="detalhes"></div>
+
+  </div>
+
+  <div id="resultadoPesquisa" class="semResultado">
+    🔎 Nenhum elemento encontrado.
+  </div>
+
+</section>
+
+<!-- CIÊNCIA -->
+
+<section id="ciencia">
+
+  <h2>🔬 Ciência e Química</h2>
+
+  <div class="card pesquisavel">
+
+    <h3>O que é a Tabela Periódica?</h3>
+
+    <p>
+      A Tabela Periódica organiza os elementos químicos
+      conhecidos de acordo com seus números atômicos
+      e propriedades periódicas.
+    </p>
+
+    <p>
+      Cada elemento possui nome, símbolo e número atômico.
+    </p>
+
+  </div>
+
+  <div class="card pesquisavel">
+
+    <h3>🔢 Número atômico</h3>
+
+    <p>
+      O número atômico indica a quantidade de prótons
+      presentes no núcleo de um átomo.
+    </p>
+
+    <div class="grid">
+
+      <div class="info">
+        🧪 Hidrogênio<br>
+        Número atômico: 1
+      </div>
+
+      <div class="info">
+        🧪 Carbono<br>
+        Número atômico: 6
+      </div>
+
+      <div class="info">
+        🧪 Oxigênio<br>
+        Número atômico: 8
+      </div>
+
+      <div class="info">
+        🧪 Ferro<br>
+        Número atômico: 26
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="card pesquisavel">
+
+    <h3>⚛️ Átomo</h3>
+
+    <p>
+      Um átomo possui prótons, nêutrons e elétrons.
+      Os prótons e nêutrons ficam no núcleo.
+    </p>
+
+  </div>
+
+  <div class="card pesquisavel">
+
+    <h3>⚡ Estados da matéria</h3>
+
+    <p>
+      As substâncias podem apresentar estados físicos
+      como sólido, líquido e gasoso.
+    </p>
+
+  </div>
+
+</section>
+
+<!-- MATEMÁTICA -->
+
+<section id="matematica">
+
+  <h2>📐 Matemática</h2>
+
+  <div class="card">
+
+    <h3>➕ Exemplo de soma</h3>
+
+    <p>
+      Carbono = 6<br>
+      Oxigênio = 8
+    </p>
+
+    <p>
+      <strong>6 + 8 = 14</strong>
+    </p>
+
+  </div>
+
+  <div class="card">
+
+    <h3>➖ Exemplo de diferença</h3>
+
+    <p>
+      <strong>8 − 6 = 2</strong>
+    </p>
+
+  </div>
+
+  <div class="card">
+
+    <h3>📊 Média</h3>
+
+    <p>
+      (6 + 8 + 10) ÷ 3 =
+      <strong>8</strong>
+    </p>
+
+  </div>
+
+  <div class="card">
+
+    <h3>🧮 Calculadora</h3>
+
+    <input
+      id="numero1"
+      type="number"
+      placeholder="Primeiro número"
+      style="padding:12px;border-radius:8px;border:1px solid #333;background:#222;color:white"
+    >
+
+    <input
+      id="numero2"
+      type="number"
+      placeholder="Segundo número"
+      style="padding:12px;border-radius:8px;border:1px solid #333;background:#222;color:white"
+    >
+
+    <br>
+
+    <button onclick="calcular('+')">Somar</button>
+    <button onclick="calcular('-')">Subtrair</button>
+    <button onclick="calcular('*')">Multiplicar</button>
+    <button onclick="calcular('/')">Dividir</button>
+
+    <div id="resultadoCalculo" class="resposta"></div>
+
+  </div>
+
+</section>
+
+<!-- PORTUGUÊS -->
+
+<section id="portugues">
+
+  <h2>📚 Português</h2>
+
+  <div class="card">
+
+    <h3>📖 Leitura e interpretação</h3>
+
+    <div class="info">
+
+      <strong>O oxigênio</strong>
+
+      <p>
+        O oxigênio é um elemento químico representado
+        pelo símbolo O. Seu número atômico é 8.
+        Ele é encontrado na atmosfera e participa de
+        processos importantes para a vida.
+      </p>
+
+    </div>
+
+    <button onclick="mostrarResposta('portugues1')">
+      Mostrar interpretação
+    </button>
+
+    <div id="portugues1" class="resposta">
+
+      O texto apresenta informações sobre o oxigênio,
+      seu símbolo, seu número atômico e sua importância.
+
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h3>📝 Vocabulário científico</h3>
+
+    <p>
+      <strong>Elemento:</strong>
+      substância formada por átomos que possuem
+      o mesmo número de prótons.
+    </p>
+
+    <p>
+      <strong>Átomo:</strong>
+      unidade fundamental da matéria.
+    </p>
+
+    <p>
+      <strong>Símbolo químico:</strong>
+      abreviação utilizada para representar um elemento.
+    </p>
+
+    <p>
+      <strong>Número atômico:</strong>
+      quantidade de prótons no núcleo.
+    </p>
+
+  </div>
+
+  <div class="card">
+
+    <h3>✍️ Produção de texto</h3>
+
+    <p>
+      Escreva um pequeno texto explicando por que
+      a Tabela Periódica
